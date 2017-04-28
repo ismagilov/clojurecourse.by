@@ -1,9 +1,11 @@
 (ns csvdb.core
-  (:require [clojure-csv.core :as csv]))
+  (:require
+    [clojure-csv.core :as csv]
+    [clojure.string :as str]
+    [proto-repl.saved-values :as pr]))
 
 (defn- parse-int [int-str]
   (Integer/parseInt int-str))
-
 
 (def student-tbl (csv/parse-csv (slurp "student.csv")))
 (def subject-tbl (csv/parse-csv (slurp "subject.csv")))
@@ -14,21 +16,21 @@
 ;;
 ;; Hint: vec, map, keyword, first
 (defn table-keys [tbl]
-  :ImplementMe!)
+  (->> (first tbl) (map keyword) vec))
 
 ;; (key-value-pairs [:id :surname :year :group_id] ["1" "Ivanov" "1996"])
 ;; => (:id "1" :surname "Ivanov" :year "1996")
 ;;
 ;; Hint: flatten, map, list
 (defn key-value-pairs [tbl-keys tbl-record]
-  :ImplementMe!)
+  (flatten (map vector tbl-keys tbl-record)))
 
 ;; (data-record [:id :surname :year :group_id] ["1" "Ivanov" "1996"])
 ;; => {:surname "Ivanov", :year "1996", :id "1"}
 ;;
 ;; Hint: apply, hash-map, key-value-pairs
 (defn data-record [tbl-keys tbl-record]
-  :ImplementMe!)
+  (apply hash-map (key-value-pairs tbl-keys tbl-record)))
 
 ;; (data-table student-tbl)
 ;; => ({:surname "Ivanov", :year "1996", :id "1"}
@@ -37,7 +39,8 @@
 ;;
 ;; Hint: let, map, next, table-keys, data-record
 (defn data-table [tbl]
-  :ImplementMe!)
+  (let [headers (table-keys student-tbl)])
+  (map #(data-record headers %) (next student-tbl)))
 
 ;; (str-field-to-int :id {:surname "Ivanov", :year "1996", :id "1"})
 ;; => {:surname "Ivanov", :year "1996", :id 1}
