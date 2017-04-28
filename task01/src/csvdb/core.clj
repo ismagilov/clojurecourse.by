@@ -1,8 +1,7 @@
 (ns csvdb.core
   (:require
     [clojure-csv.core :as csv]
-    [clojure.string :as str]
-    [proto-repl.saved-values :as pr]))
+    [clojure.string :as str]))
 
 (defn- parse-int [int-str]
   (Integer/parseInt int-str))
@@ -39,15 +38,15 @@
 ;;
 ;; Hint: let, map, next, table-keys, data-record
 (defn data-table [tbl]
-  (let [headers (table-keys student-tbl)])
-  (map #(data-record headers %) (next student-tbl)))
+  (let [headers (table-keys student-tbl)]
+   (map #(data-record headers %) (next student-tbl))))
 
 ;; (str-field-to-int :id {:surname "Ivanov", :year "1996", :id "1"})
 ;; => {:surname "Ivanov", :year "1996", :id 1}
 ;;
 ;; Hint: assoc, Integer/parseInt, get
 (defn str-field-to-int [field rec]
-  :ImplementMe!)
+  (assoc rec field (Integer/parseInt (get rec field))))
 
 (def student (->> (data-table student-tbl)
                   (map #(str-field-to-int :id %))
