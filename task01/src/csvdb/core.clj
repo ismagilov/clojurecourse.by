@@ -38,8 +38,8 @@
 ;;
 ;; Hint: let, map, next, table-keys, data-record
 (defn data-table [tbl]
-  (let [headers (table-keys student-tbl)]
-   (map #(data-record headers %) (next student-tbl))))
+  (let [headers (table-keys tbl)]
+   (map #(data-record headers %) (next tbl))))
 
 ;; (str-field-to-int :id {:surname "Ivanov", :year "1996", :id "1"})
 ;; => {:surname "Ivanov", :year "1996", :id 1}
@@ -59,26 +59,25 @@
                           (map #(str-field-to-int :subject_id %))
                           (map #(str-field-to-int :student_id %))))
 
-
 ;; (where* student (fn [rec] (> (:id rec) 1)))
 ;; => ({:surname "Petrov", :year 1997, :id 2} {:surname "Sidorov", :year 1996, :id 3})
 ;;
 ;; Hint: if-not, filter
 (defn where* [data condition-func]
-  :ImplementMe!)
+  (filter condition-func data))
 
 ;; (limit* student 1)
 ;; => ({:surname "Ivanov", :year 1998, :id 1})
 ;;
 ;; Hint: if-not, take
 (defn limit* [data lim]
-  :ImplementMe!)
+  (take lim data))
 
 ;; (order-by* student :year)
 ;; => ({:surname "Sidorov", :year 1996, :id 3} {:surname "Petrov", :year 1997, :id 2} {:surname "Ivanov", :year 1998, :id 1})
 ;; Hint: if-not, sort-by
 (defn order-by* [data column]
-  :ImplementMe!)
+  (sort-by column data))
 
 ;; (join* (join* student-subject :student_id student :id) :subject_id subject :id)
 ;; => [{:subject "Math", :subject_id 1, :surname "Ivanov", :year 1998, :student_id 1, :id 1}
@@ -95,6 +94,8 @@
   ;; 4. Use function 'merge' and merge element1 with each element2.
   ;; 5. Collect merged elements.
   :ImplementMe!)
+
+; (reduce conj () (map (fn [s] (map #(merge s %) (filter (fn [ss] (= (:student_id ss) (:id s))) student-subject))) student))
 
 ;; (perform-joins student-subject [[:student_id student :id] [:subject_id subject :id]])
 ;; => [{:subject "Math", :subject_id 1, :surname "Ivanov", :year 1998, :student_id 1, :id 1} {:subject "Math", :subject_id 1, :surname "Petrov", :year 1997, :student_id 2, :id 2} {:subject "CS", :subject_id 2, :surname "Petrov", :year 1997, :student_id 2, :id 2} {:subject "CS", :subject_id 2, :surname "Sidorov", :year 1996, :student_id 3, :id 3}]
